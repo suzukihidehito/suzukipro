@@ -1,0 +1,112 @@
+<!-- ベーステンプレートを適用する -->
+{% extends 'base.html' %}
+<!-- 静的ファイルのURLを生成するstaticタグをロードする-->
+{% load static %}
+    <title>{% block title %}俺的オススメロックバンド{% endblock %}</title>
+
+    
+
+{% block header %}   
+<header data-bs-theme="dark">
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href={% url "hideapp:rock" %}>Rock</a>
+      <button class="navbar-toggler" type="button" 
+              data-bs-toggle="collapse" data-bs-target="#navbarCollapse" 
+              aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav me-auto mb-2 mb-md-0">
+          {% if user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href='#'>home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href={% url "hideapp:post" %}>投稿する</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href={% url "account:logout" %}>ログアウト</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href={% url "password_reset" %}>パスワードのリセット</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href={% url "hideapp:contact" %}>お問い合わせ</a>
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href='#'>home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href={% url "account:login" %}>ログイン</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href={% url "account:signup" %}>ユーザー登録</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href={% url "hideapp:contact" %}>お問い合わせ</a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
+</header>
+{% endblock %}
+
+
+{% block contents %}
+
+    <!-- START THE FEATURETTES -->
+    <br>
+    <br>
+    <br>
+    <h1 class="fw-light">最強バンドサイト</h1>
+      <hr>
+      <br>
+        <p class="lead text-muted">
+          このサイトではおすすめのロックバンドの紹介をしています。<br>
+          それにユーザー登録をすることで自分のおすすめのバンドも投稿できます。<br>
+          みんなでいろいろなロックバンドを共有しましょう！！
+        </p>
+
+
+
+{% for record in object_list %}
+<hr class="featurette-divider">
+
+<div class="row featurette">
+  <div class="col-md-7">
+    <h2 class="featurette-heading fw-normal lh-1">{{record.title}}</h2>
+    <p class="lead">{{object.comment}}</p>
+    <p>{{object.posted_at}}に投稿</p>
+      <small class="text-muted">
+        {{record.user.username}}</small>
+    </a>
+    <p><a class="btn btn-secondary" href="https://www.youtube.com/@MTHOFFICIAL">YouTube→ &raquo;</a></p>
+  </div>
+  <div class="col-md-5">
+    <img src="{{ record.image.url }}" 
+         class="bd-placeholder-img bd-placeholder-img-lg featurette-image img-fluid mx-auto" 
+         width="500" height="500" 
+         xmlns="http://www.w3.org/2000/svg" 
+         role="img" aria-label="Placeholder: 500x500" 
+         preserveAspectRatio="xMidYMid slice" 
+         focusable="false">
+         <title>Placeholder</title>
+         <rect width="100%" height="100%" fill="var(--bs-secondary-bg)"/>
+         <text x="50%" y="50%" fill="var(--bs-secondary-color)" dy=".3em">500x500</text>
+      </svg>
+  </div>
+</div>
+{% endfor %}
+
+    <hr class="featurette-divider">
+
+    <!-- /END THE FEATURETTES -->
+
+    <!-- ページネーションの組み込み -->
+    {% include "pagination.html" %}
+
+{% endblock %}

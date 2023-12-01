@@ -1,0 +1,117 @@
+<!-- ベーステンプレートを適用する -->
+{% extends 'base.html' %}
+<!-- 静的ファイルのURLを生成するstaticタグをロードする-->
+{% load static %}
+
+    {% block title %}問い合わせしろよー{% endblock  %}
+
+    {% block header %}
+    <header data-bs-theme="dark">
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+          <div class="container-fluid">
+            <a class="navbar-brand" href={% url "hideapp:rock" %}>Rock</a>
+            <button class="navbar-toggler" type="button" 
+                    data-bs-toggle="collapse" data-bs-target="#navbarCollapse" 
+                    aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+              <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                  <a class="nav-link active" aria-current="page" href='#'>お問い合わせ</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href={% url "hideapp:post" %}>投稿する</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href={% url "account:logout" %}>ログアウト</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href={% url "password_reset" %}>パスワードのリセット</a>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                  <a class="nav-link active" aria-current="page" href='#'>お問い合わせ</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href={% url "account:login" %}>ログイン</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href={% url "account:signup" %}>ユーザー登録</a>
+                </li>
+                {% endif %}
+              </ul>
+            </div>
+          </div>
+        </nav>
+      </header>
+    {% endblock %}
+    
+    {% block contents %}
+    <main class="mb-4">
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <!-- 本文を変更 -->
+                    <hr>
+                    <hr>
+                    <hr>
+                    <strong>
+                        何かわからないことがありましたら、
+                        お気軽にお問い合わせください。
+                    </strong>
+                    <!-- フォームの送信が成功した時のメッセージを表示するためのコード -->
+                    <!-- requestにmessageオブジェクトが存在している場合 -->
+                    {% if messages %}
+                    <!-- 箇条書きのスタイルを無効にした<ul>タグでメッセージを出力 -->
+                    <ul class="list-unstyled" style="list-style:none;">
+                        <!-- forでメッセージを取り出す -->
+                        {% for message in messages %}
+                        <!-- message.tagsが存在する場合はclass属性にCSSのクラスを設定 -->
+                        <li {% if message.tags %} class="{{message.tags}}"{% endif %}>
+                            <!-- messageに格納されているメッセージを出力 -->
+                            {{message}}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+
+                    <!-- 以下、フォームを表示するためのコード -->
+                    <div class="my-5">
+                        <!-- method="post"を追加 -->
+                        <form method="post">
+                            <!-- CSRF対策のためのテンプレートタグ -->
+                            {% csrf_token %}
+                            <!-- formで定義されているフィールドの値を取り出す -->
+                            {% for field in form %}
+                            <div class="form-floating">
+                                <div class="form-group floating-labl-form-group controls">
+                                    <!-- <label>タグを生成 -->
+                                    {{field.label_tag}}
+                                    <!-- フィールドの設定値を<input>タグで出力 -->
+                                    {{field}}
+                                    <!-- <p>を追加 -->
+                                    <p class="help-block text-danger"></p>
+                                    <!-- <input>タグを削除 -->
+                                    <!-- <label>~</label>タグを削除 -->
+                                </div>
+                            </div>
+                            <!-- forループここまで -->
+                            {% endfor %}
+
+                            <br>
+                            <!-- 送信用のボタン -->
+                            <button type="submit"
+                                    class="btn btn-primary"
+                                    id="sendMessageButton">Send
+                            </button>
+                        </forms>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+    </main>
+    {% endblock %}
